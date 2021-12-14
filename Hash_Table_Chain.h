@@ -36,9 +36,9 @@ version of the C++ standard.
 
         /** Construct an empty hash_map. */
         hash_map() :
-            hash_fcn(hash<Key_Type>()),
-            the_buckets(INITIAL_CAPACITY),
-            LOAD_THRESHOLD(0.75) {}
+                hash_fcn(hash<Key_Type>()), num_keys(0),
+                the_buckets(INITIAL_CAPACITY), LOAD_THRESHOLD(3.0)  {
+        }
 
 
 /** Inserts an item into the map.
@@ -52,10 +52,25 @@ version of the C++ standard.
         insert(const Entry_Type &entry) {
             /*</exercise>*/
             // Check for the need to rehash.
-
+            double load_factor = double(num_keys) / the_buckets.size();
+            if (load_factor > LOAD_THRESHOLD) {
+                rehash(); }
             // Find the position in the table.
-
+            size_t index = hash_fcn(entry.first) % the_buckets.size();
             // Search for the key.
+            typename std::list<Entry_Type>::iterator pos
+                    = the_buckets[index].begin();
+            while (pos != the_buckets[index].end()
+                   && pos->first != entry.first) ++pos;
+            if (pos == the_buckets[index].end()) {  // Not in table
+                the_buckets[index].push_back(Entry_Type(entry));
+                num_keys++;
+                return std::make_pair(iterator(this, index,
+                                               --(the_buckets[index].end())),
+                                      true);
+            } else { // Already there
+                return std::make_pair(iterator(this, index, pos), false);
+            }
         }
 
         /** Lookup an item in the map
@@ -93,7 +108,7 @@ version of the C++ standard.
         /** Access a value in the map, using the key as an index
         @param key The key of the item being sought
         @return A reference to the associated value. If the
-        key was not in the map, a defalut value is inserted and
+        key was not in the map, a default value is inserted and
         a reference to this value returned.
         */
         Value_Type &operator[](const Key_Type &key) {
@@ -135,15 +150,14 @@ version of the C++ standard.
         const_iterator end() const {
         }
 
-        /*<exercise chapter="9" section="4" type="programming" number="5">*/
         /** Return the size of the map */
         size_t size() const {
-            /*</exercise>*/
+            return num_keys;
         }
 
         /** Determine if the map is empty */
         bool empty() const {
-            /*</exercise>*/
+            return the_buckets.empty();
         }
 
         /*</exercise chapter="9" section="4" type="programming" number="3">*/
@@ -157,25 +171,25 @@ version of the C++ standard.
         }
 
         // See iterator class
-        /*</exercise>*/
 #include "iterator.h"
 
         // See const_iterator class
-        /*</exercise>*/
 #include "const_iterator.h"
 
     private:
 
 /** Expand the size of the hash table */
         void rehash() {
-            /*<exercise chapter="9" section="4" type="programming" number="2">*/
-            // Create a new table that is twice the size
-
-            // Swap tables
-
-            // Reinsert items from old table to new one
-
-            /*</exercise>*/
+            // Create a new table whose size is double the current table.
+            std::vector<std::list<Entry_Type>> other_table(the_buckets.size() * 2, NULL);
+            // Swap this table with the current table.
+            the_buckets.swap(other_table);
+            // Reinsert all items from old table to new.
+            for (size_t i = 0; i < other_table.size(); i++) {
+                if ((other_table[i] != NULL)) {
+                    size_t index = locate(other_table[i]->first);
+                    the_buckets[index] = other_table[i];
+                } }
         }
 
 // Insert data fields here
