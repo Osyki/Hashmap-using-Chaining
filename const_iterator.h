@@ -2,9 +2,6 @@
 // Created by Ekyso on 12/14/2021.
 //
 
-#include "iterator"
-
-
 class const_iterator {
 public:
 
@@ -25,7 +22,7 @@ public:
     /** De-reference an const_iterator */
     const Entry_Type *operator->() const {
         if (*this == the_parent->end()) {
-            throw std::invalid_argument("Attemt to de-reference end()");
+            throw std::invalid_argument("Attempt to de-reference end()");
         }
         return &(*the_pos);
     }

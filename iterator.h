@@ -2,42 +2,49 @@
 // Created by Ekyso on 12/14/2021.
 //
 
-#ifndef CH9_HASHMAP_CHAINING2_ITERATOR_H
-#define CH9_HASHMAP_CHAINING2_ITERATOR_H
-
-
 class iterator {
 public:
 
 
     /** De-reference an iterator */
     Entry_Type &operator*() const {
-        /*</exercise>*/
+        if (*this == the_parent->end()) {
+            throw std::invalid_argument("Attemt to de-reference end()");
+        }
+        return *the_pos;
     }
 
     /** De-reference an iterator */
     Entry_Type *operator->() const {
-        /*</exercise>*/
+        if (*this == the_parent->end()) {
+            throw std::invalid_argument("Attempt to de-reference end()");
+        }
+        return &(*the_pos);
     }
 
     /** Prefix increment operator */
     iterator &operator++() {
-        /*</exercise>*/
+        ++the_pos;
+        advance();
+        return *this;
     }
 
     /** Postfix increment operator */
     iterator operator++(int) {
-        /*</exercise>*/
+        const_iterator temp(*this);
+        ++(*this);
+        return temp;
     }
 
     /** Equality operator */
     bool operator==(const iterator &other) const {
-        /*</exercise>*/
+        return the_index == other.the_index
+               && the_pos == other.the_pos;
     }
 
     /** Inequality operator */
     bool operator!=(const iterator &other) const {
-        /*</exercise>*/
+        return !operator==(other);
     }
 
 private:
@@ -50,7 +57,18 @@ private:
 
     /** Advance the iterator to the next position */
     void advance() {
-        /*</exercise>*/
+        if (the_pos != the_parent->the_buckets[the_index].end()) {
+            return;
+        } else {
+            while (the_index < (the_parent->the_buckets.size() - 1)) {
+                the_index++;
+                the_pos = the_parent->the_buckets[the_index].begin();
+                if (the_pos != the_parent->the_buckets[the_index].end())
+                    return;
+            }
+            the_pos = the_parent->the_buckets[the_index].end();
+            return;
+        }
     }
 
     /** Constructor */
@@ -70,6 +88,3 @@ private:
     /** The iterator within the bucket */
     typename std::list<Entry_Type>::iterator the_pos;
 };
-
-
-#endif //CH9_HASHMAP_CHAINING2_ITERATOR_H
