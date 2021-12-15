@@ -14,7 +14,7 @@ public:
     /** De-reference an const_iterator */
     const Entry_Type &operator*() const {
         if (*this == the_parent->end()) {
-            throw std::invalid_argument("Attemt to de-reference end()");
+            throw std::invalid_argument("Attempt to de-reference end()");
         }
         return *the_pos;
     }

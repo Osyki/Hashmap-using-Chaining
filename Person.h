@@ -144,6 +144,18 @@ private:
 /*</exercise>*/
 // specialize the hash template for a person class
 // hash key = family_name + 31 * given_name
-
+template<>
+struct hash<Person> {
+    size_t operator()(const Person& p) {
+        size_t result = 0;
+        for (size_t i = 0; i < p.get_family_name().length(); i++) {
+            result += p.get_family_name()[i] + 31;
+        }
+        for (size_t i = 0; i < p.get_given_name().length(); i++) {
+            result *= p.get_family_name()[i];
+        }
+        return result;
+    }
+};
 
 #endif //CH9_HASHMAP_CHAINING2_PERSON_H

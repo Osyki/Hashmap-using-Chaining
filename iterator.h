@@ -5,11 +5,10 @@
 class iterator {
 public:
 
-
     /** De-reference an iterator */
     Entry_Type &operator*() const {
         if (*this == the_parent->end()) {
-            throw std::invalid_argument("Attemt to de-reference end()");
+            throw std::invalid_argument("Attempt to de-reference end()");
         }
         return *the_pos;
     }
@@ -31,15 +30,14 @@ public:
 
     /** Postfix increment operator */
     iterator operator++(int) {
-        const_iterator temp(*this);
+        iterator temp(*this);
         ++(*this);
         return temp;
     }
 
     /** Equality operator */
     bool operator==(const iterator &other) const {
-        return the_index == other.the_index
-               && the_pos == other.the_pos;
+        return the_index == other.the_index && the_pos == other.the_pos;
     }
 
     /** Inequality operator */
