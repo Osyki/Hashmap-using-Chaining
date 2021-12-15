@@ -231,7 +231,7 @@ namespace KW {
         /** Expand the size of the hash table */
         void rehash() {
             // Create a new table whose size is double the current table.
-            std::vector<std::list<Entry_Type>> new_buckets(the_buckets.size() * 2, NULL);
+            std::vector<std::list<Entry_Type>> new_buckets(the_buckets.size() * 2);
             // Swap this table with the current table.
             the_buckets.swap(new_buckets);
             // Reinsert all items from old table to new.
