@@ -59,16 +59,16 @@ namespace KW {
 
 
             // Search for the key.
-            typename std::list<Entry_Type>::iterator pos = the_buckets[index].begin();
+            typename std::list<Entry_Type>::iterator pos = the_buckets.at(index).begin();
 
-            while (pos != the_buckets[index].end()  && pos->first != entry.first) {
+            while (pos != the_buckets.at(index).end()  && pos->first != entry.first) {
                 ++pos;
             }
 
-            if (pos == the_buckets[index].end()) {  // Not in table
-                the_buckets[index].push_back(Entry_Type(entry));
+            if (pos == the_buckets.at(index).end()) {  // Not in table
+                the_buckets.at(index).push_back(Entry_Type(entry));
                 num_keys++;
-                return std::make_pair(iterator(this, index, --(the_buckets[index].end())), true);
+                return std::make_pair(iterator(this, index, --(the_buckets.at(index).end())), true);
             } else { // Already there
                 return std::make_pair(iterator(this, index, pos), false);
             }
@@ -151,7 +151,7 @@ namespace KW {
 
             while (itr != the_buckets.at(index).end()) {
                 if (key == itr->first) {
-                    the_buckets[index].erase(itr);
+                    the_buckets.at(index).erase(itr);
                     num_keys--;
                     return true;
                 }
@@ -162,14 +162,14 @@ namespace KW {
 
         /** Return an iterator to the beginning of the map */
         iterator begin() {
-            iterator itr(this, 0, the_buckets[0].begin());
+            iterator itr(this, 0, the_buckets.at(0).begin());
             itr.advance();
             return itr;
         }
 
         /** Return a const_iterator to the beginning of the map */
         const_iterator begin() const {
-            const_iterator return_value(this, 0, the_buckets[0].begin());
+            const_iterator return_value(this, 0, the_buckets.at(0).begin());
             return_value.advance();
             return return_value;
         }
@@ -236,10 +236,10 @@ namespace KW {
             the_buckets.swap(new_buckets);
             // Reinsert all items from old table to new.
             for (size_t i = 0; i < new_buckets.size(); i++) {
-                typename std::list<Entry_Type>::iterator pos = new_buckets[i].begin();
-                while (pos != new_buckets[i].end()) {
+                typename std::list<Entry_Type>::iterator pos = new_buckets.at(i).begin();
+                while (pos != new_buckets.at(i).end()) {
                     size_t index = hash_fcn(pos->first) % the_buckets.size();
-                    the_buckets[index].push_back(*pos);
+                    the_buckets.at(index).push_back(*pos);
                     ++pos;
                 }
             }

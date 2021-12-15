@@ -86,3 +86,4 @@ private:
     /** The iterator within the bucket */
     typename std::list<Entry_Type>::iterator the_pos;
 };
+i
